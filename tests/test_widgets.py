@@ -264,17 +264,17 @@ class RangeWidgetTests(TestCase):
         self.assertHTMLEqual(
             w.render("price", ""),
             """
-            <input type="text" name="price_min" />
+            <input type="text" name="price_0" />
             -
-            <input type="text" name="price_max" />""",
+            <input type="text" name="price_1" />""",
         )
 
         self.assertHTMLEqual(
             w.render("price", slice(5.99, 9.99)),
             """
-            <input type="text" name="price_min" value="5.99" />
+            <input type="text" name="price_0" value="5.99" />
             -
-            <input type="text" name="price_max" value="9.99" />""",
+            <input type="text" name="price_1" value="9.99" />""",
         )
 
     def test_widget_attributes(self):
@@ -283,9 +283,9 @@ class RangeWidgetTests(TestCase):
         self.assertHTMLEqual(
             w.render("date", ""),
             """
-            <input type="date" name="date_min" />
+            <input type="date" name="date_0" />
             -
-            <input type="date" name="date_max" />""",
+            <input type="date" name="date_1" />""",
         )
 
 
