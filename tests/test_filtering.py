@@ -63,11 +63,11 @@ class CharFilterTests(TestCase):
 
         qs = Book.objects.all()
         f = F(queryset=qs)
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             f.qs, [b1.pk, b2.pk, b3.pk], lambda o: o.pk, ordered=False
         )
         f = F({"title": "Snowcrash"}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, [b3.pk], lambda o: o.pk)
+        self.assertQuerySetEqual(f.qs, [b3.pk], lambda o: o.pk)
 
 
 class IntegerFilterTest(TestCase):
@@ -87,13 +87,13 @@ class IntegerFilterTest(TestCase):
 
         qs = BankAccount.objects.all()
         f = F(queryset=qs)
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             f.qs, [b1.pk, b2.pk, b3.pk], lambda o: o.pk, ordered=False
         )
         f = F({"amount_saved": "10"}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, [b3.pk], lambda o: o.pk)
+        self.assertQuerySetEqual(f.qs, [b3.pk], lambda o: o.pk)
         f = F({"amount_saved": "0"}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, [b1.pk], lambda o: o.pk)
+        self.assertQuerySetEqual(f.qs, [b1.pk], lambda o: o.pk)
 
 
 class BooleanFilterTests(TestCase):
@@ -111,13 +111,13 @@ class BooleanFilterTests(TestCase):
 
         # '2' and '3' are how the field expects the data from the browser
         f = F({"is_active": "2"}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, ["jacob"], lambda o: o.username, False)
+        self.assertQuerySetEqual(f.qs, ["jacob"], lambda o: o.username, False)
 
         f = F({"is_active": "3"}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, ["alex", "aaron"], lambda o: o.username, False)
+        self.assertQuerySetEqual(f.qs, ["alex", "aaron"], lambda o: o.username, False)
 
         f = F({"is_active": "1"}, queryset=qs)
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             f.qs, ["alex", "aaron", "jacob"], lambda o: o.username, False
         )
 
@@ -143,17 +143,17 @@ class ChoiceFilterTests(TestCase):
                 fields = ["status"]
 
         f = F()
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             f.qs, ["aaron", "alex", "jacob", "carl"], lambda o: o.username, False
         )
         f = F({"status": "1"})
-        self.assertQuerysetEqual(f.qs, ["alex"], lambda o: o.username, False)
+        self.assertQuerySetEqual(f.qs, ["alex"], lambda o: o.username, False)
 
         f = F({"status": "2"})
-        self.assertQuerysetEqual(f.qs, ["jacob", "aaron"], lambda o: o.username, False)
+        self.assertQuerySetEqual(f.qs, ["jacob", "aaron"], lambda o: o.username, False)
 
         f = F({"status": "0"})
-        self.assertQuerysetEqual(f.qs, ["carl"], lambda o: o.username, False)
+        self.assertQuerySetEqual(f.qs, ["carl"], lambda o: o.username, False)
 
     def test_filtering_on_explicitly_defined_field(self):
         """
@@ -170,17 +170,17 @@ class ChoiceFilterTests(TestCase):
                 fields = ["status"]
 
         f = F()
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             f.qs, ["aaron", "alex", "jacob", "carl"], lambda o: o.username, False
         )
         f = F({"status": "1"})
-        self.assertQuerysetEqual(f.qs, ["alex"], lambda o: o.username, False)
+        self.assertQuerySetEqual(f.qs, ["alex"], lambda o: o.username, False)
 
         f = F({"status": "2"})
-        self.assertQuerysetEqual(f.qs, ["jacob", "aaron"], lambda o: o.username, False)
+        self.assertQuerySetEqual(f.qs, ["jacob", "aaron"], lambda o: o.username, False)
 
         f = F({"status": "0"})
-        self.assertQuerysetEqual(f.qs, ["carl"], lambda o: o.username, False)
+        self.assertQuerySetEqual(f.qs, ["carl"], lambda o: o.username, False)
 
     def test_filtering_on_empty_choice(self):
         class F(FilterSet):
@@ -189,7 +189,7 @@ class ChoiceFilterTests(TestCase):
                 fields = ["status"]
 
         f = F({"status": ""})
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             f.qs, ["aaron", "alex", "jacob", "carl"], lambda o: o.username, False
         )
 
@@ -209,10 +209,10 @@ class ChoiceFilterTests(TestCase):
 
         # sanity check to make sure the filter is setup correctly
         f = F({"author": "1"})
-        self.assertQuerysetEqual(f.qs, ["alex"], lambda o: str(o.author), False)
+        self.assertQuerySetEqual(f.qs, ["alex"], lambda o: str(o.author), False)
 
         f = F({"author": "null"})
-        self.assertQuerysetEqual(f.qs, [None], lambda o: o.author, False)
+        self.assertQuerySetEqual(f.qs, [None], lambda o: o.author, False)
 
 
 class MultipleChoiceFilterTests(TestCase):
@@ -231,18 +231,18 @@ class MultipleChoiceFilterTests(TestCase):
 
         qs = User.objects.all().order_by("username")
         f = F(queryset=qs)
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             f.qs, ["aaron", "jacob", "alex", "carl"], lambda o: o.username, False
         )
 
         f = F({"status": ["0"]}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, ["carl"], lambda o: o.username)
+        self.assertQuerySetEqual(f.qs, ["carl"], lambda o: o.username)
 
         f = F({"status": ["0", "1"]}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, ["alex", "carl"], lambda o: o.username)
+        self.assertQuerySetEqual(f.qs, ["alex", "carl"], lambda o: o.username)
 
         f = F({"status": ["0", "1", "2"]}, queryset=qs)
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             f.qs, ["aaron", "alex", "carl", "jacob"], lambda o: o.username
         )
 
@@ -273,13 +273,13 @@ class MultipleChoiceFilterTests(TestCase):
 
         # sanity check to make sure the filter is setup correctly
         f = F({"author": ["1"]})
-        self.assertQuerysetEqual(f.qs, ["alex"], lambda o: str(o.author), False)
+        self.assertQuerySetEqual(f.qs, ["alex"], lambda o: str(o.author), False)
 
         f = F({"author": ["null"]})
-        self.assertQuerysetEqual(f.qs, [None], lambda o: o.author, False)
+        self.assertQuerySetEqual(f.qs, [None], lambda o: o.author, False)
 
         f = F({"author": ["1", "null"]})
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             f.qs, ["alex", None], lambda o: o.author and str(o.author), False
         )
 
@@ -302,18 +302,18 @@ class TypedMultipleChoiceFilterTests(TestCase):
 
         qs = User.objects.all().order_by("username")
         f = F(queryset=qs)
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             f.qs, ["aa", "ja", "al", "ca"], lambda o: o.username[0:2], False
         )
 
         f = F({"status": ["0"]}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, ["ca"], lambda o: o.username[0:2])
+        self.assertQuerySetEqual(f.qs, ["ca"], lambda o: o.username[0:2])
 
         f = F({"status": ["0", "1"]}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, ["al", "ca"], lambda o: o.username[0:2])
+        self.assertQuerySetEqual(f.qs, ["al", "ca"], lambda o: o.username[0:2])
 
         f = F({"status": ["0", "1", "2"]}, queryset=qs)
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             f.qs, ["aa", "al", "ca", "ja"], lambda o: o.username[0:2]
         )
 
@@ -337,7 +337,7 @@ class DateFilterTests(TestCase):
 
         f = F({"date": check_date}, queryset=Comment.objects.all())
         self.assertEqual(len(f.qs), 2)
-        self.assertQuerysetEqual(f.qs, [2, 4], lambda o: o.pk, False)
+        self.assertQuerySetEqual(f.qs, [2, 4], lambda o: o.pk, False)
 
 
 class TimeFilterTests(TestCase):
@@ -360,7 +360,7 @@ class TimeFilterTests(TestCase):
 
         f = F({"time": check_time}, queryset=Comment.objects.all())
         self.assertEqual(len(f.qs), 2)
-        self.assertQuerysetEqual(f.qs, [2, 4], lambda o: o.pk, False)
+        self.assertQuerySetEqual(f.qs, [2, 4], lambda o: o.pk, False)
 
 
 class DateTimeFilterTests(TestCase):
@@ -386,14 +386,14 @@ class DateTimeFilterTests(TestCase):
         qs = Article.objects.all()
         f = F({"published": ten_min_ago}, queryset=qs)
         self.assertEqual(len(f.qs), 1)
-        self.assertQuerysetEqual(f.qs, [2], lambda o: o.pk)
+        self.assertQuerySetEqual(f.qs, [2], lambda o: o.pk)
 
         # this is how it would come through a browser
         f = F({"published": check_dt}, queryset=qs)
         self.assertEqual(
             len(f.qs), 1, "%s isn't matching %s when cleaned" % (check_dt, ten_min_ago)
         )
-        self.assertQuerysetEqual(f.qs, [2], lambda o: o.pk)
+        self.assertQuerySetEqual(f.qs, [2], lambda o: o.pk)
 
 
 class DurationFilterTests(TestCase):
@@ -440,19 +440,19 @@ class DurationFilterTests(TestCase):
 
         # Django style: 3 days, 10 hours, 22 minutes.
         f = F({"duration": "3 10:22:00"}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, [self.r1], lambda x: x)
+        self.assertQuerySetEqual(f.qs, [self.r1], lambda x: x)
 
         # ISO 8601: 3 days, 10 hours, 22 minutes.
         f = F({"duration": "P3DT10H22M"}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, [self.r1], lambda x: x)
+        self.assertQuerySetEqual(f.qs, [self.r1], lambda x: x)
 
         # Django style: 82 hours, 22 minutes.
         f = F({"duration": "82:22:00"}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, [self.r1], lambda x: x)
+        self.assertQuerySetEqual(f.qs, [self.r1], lambda x: x)
 
         # ISO 8601: 82 hours, 22 minutes.
         f = F({"duration": "PT82H22M"}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, [self.r1], lambda x: x)
+        self.assertQuerySetEqual(f.qs, [self.r1], lambda x: x)
 
     def test_filtering_with_single_lookup_expr_dictionary(self):
         class F(FilterSet):
@@ -463,18 +463,18 @@ class DurationFilterTests(TestCase):
         qs = SpacewalkRecord.objects.order_by("-duration")
 
         f = F({"duration__gt": "PT58H30M"}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, [self.r1, self.r2, self.r3], lambda x: x)
+        self.assertQuerySetEqual(f.qs, [self.r1, self.r2, self.r3], lambda x: x)
 
         f = F({"duration__gte": "PT58H30M"}, queryset=qs)
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             f.qs, [self.r1, self.r2, self.r3, self.r4], lambda x: x
         )
 
         f = F({"duration__lt": "PT58H30M"}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, [self.r5], lambda x: x)
+        self.assertQuerySetEqual(f.qs, [self.r5], lambda x: x)
 
         f = F({"duration__lte": "PT58H30M"}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, [self.r4, self.r5], lambda x: x)
+        self.assertQuerySetEqual(f.qs, [self.r4, self.r5], lambda x: x)
 
     def test_filtering_with_multiple_lookup_exprs(self):
         class F(FilterSet):
@@ -488,7 +488,7 @@ class DurationFilterTests(TestCase):
         qs = SpacewalkRecord.objects.order_by("duration")
 
         f = F({"min_duration": "PT55H", "max_duration": "PT60H"}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, [self.r4, self.r3], lambda x: x)
+        self.assertQuerySetEqual(f.qs, [self.r4, self.r3], lambda x: x)
 
 
 class ModelChoiceFilterTests(TestCase):
@@ -508,7 +508,7 @@ class ModelChoiceFilterTests(TestCase):
 
         qs = Comment.objects.all()
         f = F({"author": jacob.pk}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, [1, 3], lambda o: o.pk, False)
+        self.assertQuerySetEqual(f.qs, [1, 3], lambda o: o.pk, False)
 
     @override_settings(FILTERS_NULL_CHOICE_LABEL="No Author")
     def test_filtering_null(self):
@@ -523,7 +523,7 @@ class ModelChoiceFilterTests(TestCase):
 
         qs = Article.objects.all()
         f = F({"author": "null"}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, [None], lambda o: o.author, False)
+        self.assertQuerySetEqual(f.qs, [None], lambda o: o.author, False)
 
     def test_callable_queryset(self):
         # Sanity check for callable queryset arguments.
@@ -547,11 +547,11 @@ class ModelChoiceFilterTests(TestCase):
 
         request.user = jacob
         f = F(queryset=qs, request=request).filters["author"].field
-        self.assertQuerysetEqual(f.queryset, [1], lambda o: o.pk, False)
+        self.assertQuerySetEqual(f.queryset, [1], lambda o: o.pk, False)
 
         request.user = aaron
         f = F(queryset=qs, request=request).filters["author"].field
-        self.assertQuerysetEqual(f.queryset, [1, 2], lambda o: o.pk, False)
+        self.assertQuerySetEqual(f.queryset, [1, 2], lambda o: o.pk, False)
 
 
 class ModelMultipleChoiceFilterTests(TestCase):
@@ -578,16 +578,16 @@ class ModelMultipleChoiceFilterTests(TestCase):
 
         qs = User.objects.all().order_by("username")
         f = F({"favorite_books": ["1"]}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, ["aaron", "alex"], lambda o: o.username)
+        self.assertQuerySetEqual(f.qs, ["aaron", "alex"], lambda o: o.username)
 
         f = F({"favorite_books": ["1", "3"]}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, ["aaron", "alex"], lambda o: o.username)
+        self.assertQuerySetEqual(f.qs, ["aaron", "alex"], lambda o: o.username)
 
         f = F({"favorite_books": ["2"]}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, ["alex"], lambda o: o.username)
+        self.assertQuerySetEqual(f.qs, ["alex"], lambda o: o.username)
 
         f = F({"favorite_books": ["4"]}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, [], lambda o: o.username)
+        self.assertQuerySetEqual(f.qs, [], lambda o: o.username)
 
     @override_settings(FILTERS_NULL_CHOICE_LABEL="No Favorites")
     def test_filtering_null(self):
@@ -599,7 +599,7 @@ class ModelMultipleChoiceFilterTests(TestCase):
         qs = User.objects.all()
         f = F({"favorite_books": ["null"]}, queryset=qs)
 
-        self.assertQuerysetEqual(f.qs, ["jacob"], lambda o: o.username)
+        self.assertQuerySetEqual(f.qs, ["jacob"], lambda o: o.username)
 
     def test_filtering_dictionary(self):
         class F(FilterSet):
@@ -609,16 +609,16 @@ class ModelMultipleChoiceFilterTests(TestCase):
 
         qs = User.objects.all().order_by("username")
         f = F({"favorite_books": ["1"]}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, ["aaron", "alex"], lambda o: o.username)
+        self.assertQuerySetEqual(f.qs, ["aaron", "alex"], lambda o: o.username)
 
         f = F({"favorite_books": ["1", "3"]}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, ["aaron", "alex"], lambda o: o.username)
+        self.assertQuerySetEqual(f.qs, ["aaron", "alex"], lambda o: o.username)
 
         f = F({"favorite_books": ["2"]}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, ["alex"], lambda o: o.username)
+        self.assertQuerySetEqual(f.qs, ["alex"], lambda o: o.username)
 
         f = F({"favorite_books": ["4"]}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, [], lambda o: o.username)
+        self.assertQuerySetEqual(f.qs, [], lambda o: o.username)
 
     def test_filtering_on_all_of_subset_of_choices(self):
         class F(FilterSet):
@@ -641,7 +641,7 @@ class ModelMultipleChoiceFilterTests(TestCase):
         f = F({"favorite_books": ["1", "2"]}, queryset=qs)
 
         # The results should only include matching users - not Jacob.
-        self.assertQuerysetEqual(f.qs, ["aaron", "alex"], lambda o: o.username)
+        self.assertQuerySetEqual(f.qs, ["aaron", "alex"], lambda o: o.username)
 
     def test_filtering_on_non_required_fields(self):
         # See issue #132 - filtering with all options on a non-required
@@ -690,7 +690,7 @@ class NumberFilterTests(TestCase):
                 fields = ["price"]
 
         f = F({"price": 10}, queryset=Book.objects.all())
-        self.assertQuerysetEqual(f.qs, ["Ender's Game"], lambda o: o.title)
+        self.assertQuerySetEqual(f.qs, ["Ender's Game"], lambda o: o.title)
 
 
 class RangeFilterTests(TestCase):
@@ -717,31 +717,31 @@ class RangeFilterTests(TestCase):
 
         qs = Book.objects.all().order_by("title")
         f = F(queryset=qs)
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             f.qs,
             ["Ender's Game", "Free Book", "Rainbow Six", "Refund", "Snowcrash"],
             lambda o: o.title,
         )
-        f = F({"price_min": "5", "price_max": "15"}, queryset=qs)
-        self.assertQuerysetEqual(
+        f = F({"price_0": "5", "price_1": "15"}, queryset=qs)
+        self.assertQuerySetEqual(
             f.qs, ["Ender's Game", "Rainbow Six"], lambda o: o.title
         )
 
-        f = F({"price_min": "11"}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, ["Rainbow Six", "Snowcrash"], lambda o: o.title)
-        f = F({"price_max": "19"}, queryset=qs)
-        self.assertQuerysetEqual(
+        f = F({"price_0": "11"}, queryset=qs)
+        self.assertQuerySetEqual(f.qs, ["Rainbow Six", "Snowcrash"], lambda o: o.title)
+        f = F({"price_1": "19"}, queryset=qs)
+        self.assertQuerySetEqual(
             f.qs,
             ["Ender's Game", "Free Book", "Rainbow Six", "Refund"],
             lambda o: o.title,
         )
 
-        f = F({"price_min": "0", "price_max": "12"}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, ["Ender's Game", "Free Book"], lambda o: o.title)
-        f = F({"price_min": "-11", "price_max": "0"}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, ["Free Book", "Refund"], lambda o: o.title)
-        f = F({"price_min": "0", "price_max": "0"}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, ["Free Book"], lambda o: o.title)
+        f = F({"price_0": "0", "price_1": "12"}, queryset=qs)
+        self.assertQuerySetEqual(f.qs, ["Ender's Game", "Free Book"], lambda o: o.title)
+        f = F({"price_0": "-11", "price_1": "0"}, queryset=qs)
+        self.assertQuerySetEqual(f.qs, ["Free Book", "Refund"], lambda o: o.title)
+        f = F({"price_0": "0", "price_1": "0"}, queryset=qs)
+        self.assertQuerySetEqual(f.qs, ["Free Book"], lambda o: o.title)
 
 
 class DateRangeFilterTests(TestCase):
@@ -777,27 +777,27 @@ class DateRangeFilterTests(TestCase):
     def test_filtering_for_year(self):
         f = self.CommentFilter({"date": "year"})
         with self.relative_to(datetime.datetime(now().year, 4, 1)):
-            self.assertQuerysetEqual(f.qs, [1, 3, 4, 5, 6], lambda o: o.pk, False)
+            self.assertQuerySetEqual(f.qs, [1, 3, 4, 5, 6], lambda o: o.pk, False)
 
     def test_filtering_for_month(self):
         f = self.CommentFilter({"date": "month"})
         with self.relative_to(datetime.datetime(now().year, 4, 21)):
-            self.assertQuerysetEqual(f.qs, [1, 3, 4, 5], lambda o: o.pk, False)
+            self.assertQuerySetEqual(f.qs, [1, 3, 4, 5], lambda o: o.pk, False)
 
     def test_filtering_for_week(self):
         f = self.CommentFilter({"date": "week"})
         with self.relative_to(datetime.datetime(now().year, 1, 1)):
-            self.assertQuerysetEqual(f.qs, [3, 4, 5], lambda o: o.pk, False)
+            self.assertQuerySetEqual(f.qs, [3, 4, 5], lambda o: o.pk, False)
 
     def test_filtering_for_yesterday(self):
         f = self.CommentFilter({"date": "yesterday"})
         with self.relative_to(datetime.datetime(now().year, 1, 1)):
-            self.assertQuerysetEqual(f.qs, [5], lambda o: o.pk, False)
+            self.assertQuerySetEqual(f.qs, [5], lambda o: o.pk, False)
 
     def test_filtering_for_today(self):
         f = self.CommentFilter({"date": "today"})
         with self.relative_to(datetime.datetime(now().year, 1, 1)):
-            self.assertQuerysetEqual(f.qs, [4], lambda o: o.pk, False)
+            self.assertQuerySetEqual(f.qs, [4], lambda o: o.pk, False)
 
 
 class DateFromToRangeFilterTests(TestCase):
@@ -817,7 +817,7 @@ class DateFromToRangeFilterTests(TestCase):
                 fields = ["date"]
 
         results = F(
-            data={"published_after": "2016-01-02", "published_before": "2016-01-03"}
+            data={"published_0": "2016-01-02", "published_1": "2016-01-03"}
         )
         self.assertEqual(len(results.qs), 3)
 
@@ -844,7 +844,7 @@ class DateFromToRangeFilterTests(TestCase):
                 fields = ["published"]
 
         results = F(
-            data={"published_after": "2016-01-02", "published_before": "2016-01-03"}
+            data={"published_0": "2016-01-02", "published_1": "2016-01-03"}
         )
         self.assertEqual(len(results.qs), 3)
 
@@ -873,7 +873,7 @@ class DateFromToRangeFilterTests(TestCase):
                 fields = ["published"]
 
         results = F(
-            data={"published_after": "2017-10-15", "published_before": "2017-10-15"}
+            data={"published_0": "2017-10-15", "published_1": "2017-10-15"}
         )
         self.assertEqual(len(results.qs), 2)
 
@@ -902,7 +902,7 @@ class DateFromToRangeFilterTests(TestCase):
                 fields = ["published"]
 
         results = F(
-            data={"published_after": "2017-02-18", "published_before": "2017-02-18"}
+            data={"published_0": "2017-02-18", "published_1": "2017-02-18"}
         )
         self.assertEqual(len(results.qs), 2)
 
@@ -934,7 +934,7 @@ class DateFromToRangeFilterTests(TestCase):
                 fields = ["published"]
 
         results = F(
-            data={"published_after": "2017-3-26", "published_before": "2017-3-26"}
+            data={"published_0": "2017-3-26", "published_1": "2017-3-26"}
         )
         self.assertEqual(len(results.qs), 3)
 
@@ -966,7 +966,7 @@ class DateFromToRangeFilterTests(TestCase):
                 fields = ["published"]
 
         results = F(
-            data={"published_after": "2017-10-29", "published_before": "2017-10-29"}
+            data={"published_0": "2017-10-29", "published_1": "2017-10-29"}
         )
         self.assertEqual(len(results.qs), 3)
 
@@ -996,8 +996,8 @@ class DateTimeFromToRangeFilterTests(TestCase):
 
         results = F(
             data={
-                "published_after": "2016-01-02 10:00",
-                "published_before": "2016-01-03 19:00",
+                "published_0": "2016-01-02 10:00",
+                "published_1": "2016-01-03 19:00",
             }
         )
         self.assertEqual(len(results.qs), 2)
@@ -1029,8 +1029,8 @@ class IsoDateTimeFromToRangeFilterTests(TestCase):
         dt = datetime.datetime.now(tz=tz)
         results = F(
             data={
-                "published_after": "2016-01-02T10:00:00.000000" + dt.strftime("%z"),
-                "published_before": "2016-01-03T19:00:00.000000" + dt.strftime("%z"),
+                "published_0": "2016-01-02T10:00:00.000000" + dt.strftime("%z"),
+                "published_1": "2016-01-03T19:00:00.000000" + dt.strftime("%z"),
             }
         )
         self.assertEqual(len(results.qs), 2)
@@ -1052,7 +1052,7 @@ class TimeRangeFilterTests(TestCase):
                 model = Comment
                 fields = ["time"]
 
-        results = F(data={"time_after": "8:00", "time_before": "10:00"})
+        results = F(data={"time_0": "8:00", "time_1": "10:00"})
         self.assertEqual(len(results.qs), 2)
 
 
@@ -1177,7 +1177,7 @@ class O2ORelationshipTests(TestCase):
 
         f = F({"account": 1})
         self.assertEqual(f.qs.count(), 1)
-        self.assertQuerysetEqual(f.qs, [1], lambda o: o.pk)
+        self.assertQuerySetEqual(f.qs, [1], lambda o: o.pk)
 
     def test_o2o_relation_dictionary(self):
         class F(FilterSet):
@@ -1192,7 +1192,7 @@ class O2ORelationshipTests(TestCase):
 
         f = F({"account": 1})
         self.assertEqual(f.qs.count(), 1)
-        self.assertQuerysetEqual(f.qs, [1], lambda o: o.pk)
+        self.assertQuerySetEqual(f.qs, [1], lambda o: o.pk)
 
     def test_reverse_o2o_relation(self):
         class F(FilterSet):
@@ -1205,7 +1205,7 @@ class O2ORelationshipTests(TestCase):
 
         f = F({"profile": 1})
         self.assertEqual(f.qs.count(), 1)
-        self.assertQuerysetEqual(f.qs, [1], lambda o: o.pk)
+        self.assertQuerySetEqual(f.qs, [1], lambda o: o.pk)
 
     def test_o2o_relation_attribute(self):
         class F(FilterSet):
@@ -1218,7 +1218,7 @@ class O2ORelationshipTests(TestCase):
 
         f = F({"account__in_good_standing": "2"})
         self.assertEqual(f.qs.count(), 2)
-        self.assertQuerysetEqual(f.qs, [2, 3], lambda o: o.pk, False)
+        self.assertQuerySetEqual(f.qs, [2, 3], lambda o: o.pk, False)
 
     def test_o2o_relation_attribute2(self):
         class F(FilterSet):
@@ -1234,7 +1234,7 @@ class O2ORelationshipTests(TestCase):
 
         f = F({"account__in_good_standing": "2", "account__friendly": "2"})
         self.assertEqual(f.qs.count(), 1)
-        self.assertQuerysetEqual(f.qs, [2], lambda o: o.pk)
+        self.assertQuerySetEqual(f.qs, [2], lambda o: o.pk)
 
     def test_reverse_o2o_relation_attribute(self):
         class F(FilterSet):
@@ -1247,7 +1247,7 @@ class O2ORelationshipTests(TestCase):
 
         f = F({"profile__likes_coffee": "2"})
         self.assertEqual(f.qs.count(), 2)
-        self.assertQuerysetEqual(f.qs, [1, 3], lambda o: o.pk, False)
+        self.assertQuerySetEqual(f.qs, [1, 3], lambda o: o.pk, False)
 
     def test_reverse_o2o_relation_attribute2(self):
         class F(FilterSet):
@@ -1260,7 +1260,7 @@ class O2ORelationshipTests(TestCase):
 
         f = F({"profile__likes_coffee": "2", "profile__likes_tea": "2"})
         self.assertEqual(f.qs.count(), 1)
-        self.assertQuerysetEqual(f.qs, [3], lambda o: o.pk)
+        self.assertQuerySetEqual(f.qs, [3], lambda o: o.pk)
 
 
 class FKRelationshipTests(TestCase):
@@ -1281,7 +1281,7 @@ class FKRelationshipTests(TestCase):
 
         f = F({"company": 1})
         self.assertEqual(f.qs.count(), 2)
-        self.assertQuerysetEqual(f.qs, [1, 3], lambda o: o.pk, False)
+        self.assertQuerySetEqual(f.qs, [1, 3], lambda o: o.pk, False)
 
     def test_reverse_fk_relation(self):
         alex = User.objects.create(username="alex")
@@ -1299,7 +1299,7 @@ class FKRelationshipTests(TestCase):
 
         qs = User.objects.all()
         f = F({"comments": [2]}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, ["alex"], lambda o: o.username)
+        self.assertQuerySetEqual(f.qs, ["alex"], lambda o: o.username)
 
         class F(FilterSet):
             comments = AllValuesFilter()
@@ -1309,7 +1309,7 @@ class FKRelationshipTests(TestCase):
                 fields = ["comments"]
 
         f = F({"comments": 2}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, ["alex"], lambda o: o.username)
+        self.assertQuerySetEqual(f.qs, ["alex"], lambda o: o.username)
 
     def test_fk_relation_attribute(self):
         now_dt = now()
@@ -1355,7 +1355,7 @@ class FKRelationshipTests(TestCase):
 
         qs = User.objects.all()
         f = F({"comments__text": "comment 2"}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, ["alex"], lambda o: o.username)
+        self.assertQuerySetEqual(f.qs, ["alex"], lambda o: o.username)
 
         class F(FilterSet):
             comments__text = AllValuesFilter()
@@ -1365,7 +1365,7 @@ class FKRelationshipTests(TestCase):
                 fields = ["comments__text"]
 
         f = F({"comments__text": "comment 2"}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, ["alex"], lambda o: o.username)
+        self.assertQuerySetEqual(f.qs, ["alex"], lambda o: o.username)
 
     @unittest.skip("todo - need correct models")
     def test_fk_relation_multiple_attributes(self):
@@ -1408,16 +1408,16 @@ class M2MRelationshipTests(TestCase):
 
         qs = User.objects.all().order_by("username")
         f = F({"favorite_books": ["1"]}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, ["aaron", "alex"], lambda o: o.username)
+        self.assertQuerySetEqual(f.qs, ["aaron", "alex"], lambda o: o.username)
 
         f = F({"favorite_books": ["1", "3"]}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, ["aaron", "alex"], lambda o: o.username)
+        self.assertQuerySetEqual(f.qs, ["aaron", "alex"], lambda o: o.username)
 
         f = F({"favorite_books": ["2"]}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, ["alex"], lambda o: o.username)
+        self.assertQuerySetEqual(f.qs, ["alex"], lambda o: o.username)
 
         f = F({"favorite_books": ["4"]}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, [], lambda o: o.username)
+        self.assertQuerySetEqual(f.qs, [], lambda o: o.username)
 
     def test_reverse_m2m_relation(self):
         class F(FilterSet):
@@ -1427,7 +1427,7 @@ class M2MRelationshipTests(TestCase):
 
         qs = Book.objects.all().order_by("title")
         f = F({"lovers": [1]}, queryset=qs)
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             f.qs, ["Ender's Game", "Rainbow Six"], lambda o: o.title
         )
 
@@ -1439,7 +1439,7 @@ class M2MRelationshipTests(TestCase):
                 fields = ["lovers"]
 
         f = F({"lovers": 1}, queryset=qs)
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             f.qs, ["Ender's Game", "Rainbow Six"], lambda o: o.title
         )
 
@@ -1451,10 +1451,10 @@ class M2MRelationshipTests(TestCase):
 
         qs = User.objects.all().order_by("username")
         f = F({"favorite_books__title": "Ender's Game"}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, ["aaron", "alex"], lambda o: o.username)
+        self.assertQuerySetEqual(f.qs, ["aaron", "alex"], lambda o: o.username)
 
         f = F({"favorite_books__title": "Rainbow Six"}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, ["alex"], lambda o: o.username)
+        self.assertQuerySetEqual(f.qs, ["alex"], lambda o: o.username)
 
         class F(FilterSet):
             favorite_books__title = MultipleChoiceFilter()
@@ -1467,7 +1467,7 @@ class M2MRelationshipTests(TestCase):
         self.assertEqual(len(f.filters["favorite_books__title"].field.choices), 0)
         # f = F({'favorite_books__title': ['1', '3']},
         #     queryset=qs)
-        # self.assertQuerysetEqual(
+        # self.assertQuerySetEqual(
         #     f.qs, ['aaron', 'alex'], lambda o: o.username)
 
         class F(FilterSet):
@@ -1478,7 +1478,7 @@ class M2MRelationshipTests(TestCase):
                 fields = ["favorite_books__title"]
 
         f = F({"favorite_books__title": "Snowcrash"}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, ["aaron"], lambda o: o.username)
+        self.assertQuerySetEqual(f.qs, ["aaron"], lambda o: o.username)
 
     def test_reverse_m2m_relation_attribute(self):
         class F(FilterSet):
@@ -1488,12 +1488,12 @@ class M2MRelationshipTests(TestCase):
 
         qs = Book.objects.all().order_by("title")
         f = F({"lovers__username": "alex"}, queryset=qs)
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             f.qs, ["Ender's Game", "Rainbow Six"], lambda o: o.title
         )
 
         f = F({"lovers__username": "jacob"}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, [], lambda o: o.title)
+        self.assertQuerySetEqual(f.qs, [], lambda o: o.title)
 
         class F(FilterSet):
             lovers__username = MultipleChoiceFilter()
@@ -1506,7 +1506,7 @@ class M2MRelationshipTests(TestCase):
         self.assertEqual(len(f.filters["lovers__username"].field.choices), 0)
         # f = F({'lovers__username': ['1', '3']},
         #     queryset=qs)
-        # self.assertQuerysetEqual(
+        # self.assertQuerySetEqual(
         #     f.qs, ["Ender's Game", "Rainbow Six"], lambda o: o.title)
 
         class F(FilterSet):
@@ -1517,7 +1517,7 @@ class M2MRelationshipTests(TestCase):
                 fields = ["lovers__username"]
 
         f = F({"lovers__username": "alex"}, queryset=qs)
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             f.qs, ["Ender's Game", "Rainbow Six"], lambda o: o.title
         )
 
@@ -1533,13 +1533,13 @@ class M2MRelationshipTests(TestCase):
             {"favorite_books__price": "1.00", "favorite_books__average_rating": 4.0},
             queryset=qs,
         )
-        self.assertQuerysetEqual(f.qs, ["aaron"], lambda o: o.username)
+        self.assertQuerySetEqual(f.qs, ["aaron"], lambda o: o.username)
 
         f = F(
             {"favorite_books__price": "3.00", "favorite_books__average_rating": 4.0},
             queryset=qs,
         )
-        self.assertQuerysetEqual(f.qs, [], lambda o: o.username)
+        self.assertQuerySetEqual(f.qs, [], lambda o: o.username)
 
     @unittest.expectedFailure
     def test_reverse_m2m_relation_multiple_attributes(self):
@@ -1550,12 +1550,12 @@ class M2MRelationshipTests(TestCase):
 
         qs = Book.objects.all().order_by("title")
         f = F({"lovers__status": 1, "lovers__username": "alex"}, queryset=qs)
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             f.qs, ["Ender's Game", "Rainbow Six"], lambda o: o.title
         )
 
         f = F({"lovers__status": 1, "lovers__username": "jacob"}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, [], lambda o: o.title)
+        self.assertQuerySetEqual(f.qs, [], lambda o: o.title)
 
     @unittest.skip("todo")
     def test_fk_relation_on_m2m_relation(self):
@@ -1585,7 +1585,7 @@ class SymmetricalSelfReferentialRelationshipTests(TestCase):
 
         qs = Node.objects.all().order_by("pk")
         f = F({"adjacents": ["1"]}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, [2, 4], lambda o: o.pk)
+        self.assertQuerySetEqual(f.qs, [2, 4], lambda o: o.pk)
 
 
 class NonSymmetricalSelfReferentialRelationshipTests(TestCase):
@@ -1607,7 +1607,7 @@ class NonSymmetricalSelfReferentialRelationshipTests(TestCase):
 
         qs = DirectedNode.objects.all().order_by("pk")
         f = F({"outbound_nodes": ["1"]}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, [4], lambda o: o.pk)
+        self.assertQuerySetEqual(f.qs, [4], lambda o: o.pk)
 
     def test_reverse_relation(self):
         class F(FilterSet):
@@ -1617,7 +1617,7 @@ class NonSymmetricalSelfReferentialRelationshipTests(TestCase):
 
         qs = DirectedNode.objects.all().order_by("pk")
         f = F({"inbound_nodes": ["1"]}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, [2], lambda o: o.pk)
+        self.assertQuerySetEqual(f.qs, [2], lambda o: o.pk)
 
 
 @override_settings(TIME_ZONE="UTC")
@@ -1639,7 +1639,7 @@ class TransformedQueryExpressionFilterTests(TestCase):
         qs = Article.objects.all()
         f = F({"published__hour__gte": 17}, queryset=qs)
         self.assertEqual(len(f.qs), 1)
-        self.assertQuerysetEqual(f.qs, [a.pk], lambda o: o.pk)
+        self.assertQuerySetEqual(f.qs, [a.pk], lambda o: o.pk)
 
 
 class LookupChoiceFilterTests(TestCase):
@@ -1668,12 +1668,12 @@ class LookupChoiceFilterTests(TestCase):
         F = self.BookFilter
 
         f = F({"price": "15", "price_lookup": "lt"})
-        self.assertQuerysetEqual(f.qs, ["Ender's Game"], lambda o: o.title)
+        self.assertQuerySetEqual(f.qs, ["Ender's Game"], lambda o: o.title)
         f = F({"price": "15", "price_lookup": "lt"})
-        self.assertQuerysetEqual(f.qs, ["Ender's Game"], lambda o: o.title)
+        self.assertQuerySetEqual(f.qs, ["Ender's Game"], lambda o: o.title)
         f = F({"price": "", "price_lookup": "lt"})
         self.assertTrue(f.is_valid())
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             f.qs,
             ["Ender's Game", "Rainbow Six", "Snowcrash"],
             lambda o: o.title,
@@ -1681,7 +1681,7 @@ class LookupChoiceFilterTests(TestCase):
         )
         f = F({"price": "15"})
         self.assertFalse(f.is_valid())
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             f.qs,
             ["Ender's Game", "Rainbow Six", "Snowcrash"],
             lambda o: o.title,
@@ -1777,7 +1777,7 @@ class CSVFilterTests(TestCase):
 
         for params, expected in cases:
             with self.subTest(params=params, expected=expected):
-                self.assertQuerysetEqual(
+                self.assertQuerySetEqual(
                     F(params, queryset=qs).qs, expected, attrgetter("pk")
                 )
 
@@ -1798,7 +1798,7 @@ class CSVFilterTests(TestCase):
 
         for params, expected in cases:
             with self.subTest(params=params, expected=expected):
-                self.assertQuerysetEqual(
+                self.assertQuerySetEqual(
                     F(params, queryset=qs).qs, expected, attrgetter("pk")
                 )
 
@@ -1840,7 +1840,7 @@ class CSVFilterTests(TestCase):
 
         for params, expected in cases:
             with self.subTest(params=params, expected=expected):
-                self.assertQuerysetEqual(
+                self.assertQuerySetEqual(
                     F(params, queryset=qs).qs, expected, attrgetter("pk")
                 )
 
@@ -1861,7 +1861,7 @@ class CSVFilterTests(TestCase):
 
         for params, expected in cases:
             with self.subTest(params=params, expected=expected):
-                self.assertQuerysetEqual(
+                self.assertQuerySetEqual(
                     F(params, queryset=qs).qs, expected, attrgetter("pk")
                 )
 
@@ -1999,7 +1999,7 @@ class MiscFilterSetTests(TestCase):
             username = CharFilter()
 
         f = F({"username": "alex"}, queryset=User.objects.all())
-        self.assertQuerysetEqual(f.qs, ["alex"], lambda o: o.username)
+        self.assertQuerySetEqual(f.qs, ["alex"], lambda o: o.username)
 
     def test_filtering_with_multiple_filters(self):
         class F(FilterSet):
@@ -2010,10 +2010,10 @@ class MiscFilterSetTests(TestCase):
         qs = User.objects.all()
 
         f = F({"username": "alex", "status": "1"}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, ["alex"], lambda o: o.username)
+        self.assertQuerySetEqual(f.qs, ["alex"], lambda o: o.username)
 
         f = F({"username": "alex", "status": "2"}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, [], lambda o: o.pk)
+        self.assertQuerySetEqual(f.qs, [], lambda o: o.pk)
 
     def test_filter_with_initial(self):
         # Initial values are a form presentation option - the FilterSet should
@@ -2029,10 +2029,10 @@ class MiscFilterSetTests(TestCase):
         users = ["alex", "jacob", "aaron", "carl"]
 
         f = F(queryset=qs)
-        self.assertQuerysetEqual(f.qs.order_by("pk"), users, lambda o: o.username)
+        self.assertQuerySetEqual(f.qs.order_by("pk"), users, lambda o: o.username)
 
         f = F({"status": 0}, queryset=qs)
-        self.assertQuerysetEqual(f.qs, ["carl"], lambda o: o.username)
+        self.assertQuerySetEqual(f.qs, ["carl"], lambda o: o.username)
 
     def test_qs_count(self):
         class F(FilterSet):
