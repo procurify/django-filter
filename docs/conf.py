@@ -265,7 +265,6 @@ on_rtd = os.environ.get("READTHEDOCS", None) == "True"
 
 # only import and set the theme if we're building docs locally
 if not on_rtd:
-    import sphinx_rtd_theme
-
+    # sphinx_rtd_theme >= 1.0 registers itself with Sphinx;
+    # get_html_theme_path() is deprecated and warns under -W.
     html_theme = "sphinx_rtd_theme"
-    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]

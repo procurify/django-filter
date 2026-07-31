@@ -17,6 +17,16 @@ from django.utils.translation import gettext as _
 from .exceptions import FieldLookupError
 
 
+def is_iterable(x):
+    # Replacement for django.utils.itercompat.is_iterable, deprecated in
+    # Django 5.1 and removed in 6.0.
+    try:
+        iter(x)
+    except TypeError:
+        return False
+    return True
+
+
 def deprecate(msg, level_modifier=0):
     warnings.warn(msg, MigrationNotice, stacklevel=3 + level_modifier)
 
